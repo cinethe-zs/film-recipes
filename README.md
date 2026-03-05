@@ -17,10 +17,11 @@ A single-page reference tool for emulating analog film stocks on vintage digital
 
 - Filter recipes by film type (color, B&W, slide, cross-process, experimental)
 - Filter by push/pull compensation
+- Multiple WB settings (Auto, Daylight, Cloudy, etc.) per recipe
 - Compare two recipes side by side
 - Random recipe picker
 - Print-friendly view
 
 ## Usage
 
-Open `index.html` in any browser — no build step, no dependencies, no server required.
+Visit **[cinethe-zs.github.io/film-recipes](https://cinethe-zs.github.io/film-recipes/)** or open `index.html` in any browser — no build step, no dependencies, no server required.
