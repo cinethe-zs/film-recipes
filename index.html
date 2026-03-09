@@ -6633,7 +6633,7 @@ function fmtSlider(v, r) {
     + '</span>';
 }
 
-function axPos(n) { return 50 + (n / 3) * 40; }
+function axPos(n, range) { range = range || 3; return Math.min(100, Math.max(0, 50 + (n / range) * 40)); }
 function axStr(n, neg, pos) {
   return n === 0 ? '0' : (n < 0 ? neg : pos) + Math.abs(n);
 }
@@ -6644,6 +6644,12 @@ function renderWbPanel(stock, cam, variant) {
   var isBW = stock.tags.indexOf('bw') >= 0;
   var cam0 = CAMERAS[cam];
 
+  // Parse the camera's WB shift range (e.g. "±9 A/B · ±9 G/M" → rangeAB=9, rangeGM=9)
+  var rangeAB = 3;
+  var rangeGM = 3;
+  var rm = (cam0.wbShiftRange || '').match(/±(\d+)\s*A\/B\s*[·×·\s]+±(\d+)\s*G\/M/);
+  if (rm) { rangeAB = parseInt(rm[1]); rangeGM = parseInt(rm[2]); }
+
   // ── Helper: render axes HTML for given ab/gm ─────────────────────────────
   function wbAxesHtml(ab, gm) {
     return '<div class="wb-axes">'
@@ -6652,7 +6658,7 @@ function renderWbPanel(stock, cam, variant) {
         + '<span class="ax-val">' + axStr(ab,'A','B') + '</span>'
         + '<div class="ax-track">'
           + '<span class="ax-end">A</span>'
-          + '<div class="ax-bar"><div class="ax-pip" style="left:' + axPos(ab) + '%"></div></div>'
+          + '<div class="ax-bar"><div class="ax-pip" style="left:' + axPos(ab, rangeAB) + '%"></div></div>'
           + '<span class="ax-end">B</span>'
         + '</div>'
       + '</div>'
@@ -6661,7 +6667,7 @@ function renderWbPanel(stock, cam, variant) {
         + '<span class="ax-val">' + axStr(gm,'G','M') + '</span>'
         + '<div class="ax-track">'
           + '<span class="ax-end">G</span>'
-          + '<div class="ax-bar"><div class="ax-pip" style="left:' + axPos(gm) + '%"></div></div>'
+          + '<div class="ax-bar"><div class="ax-pip" style="left:' + axPos(gm, rangeGM) + '%"></div></div>'
           + '<span class="ax-end">M</span>'
         + '</div>'
       + '</div>'
@@ -6677,11 +6683,6 @@ function renderWbPanel(stock, cam, variant) {
         + 'Set camera to Incandescent preset for warm neutral base, or leave at AWB.</div>'
         + '</div>';
     }
-    // Parse the camera's WB shift range (e.g. "±9 A/B · ±3 G/M" → ab range = 9)
-    var rangeAB = 3;
-    var rangeGM = 3;
-    var rm = (cam0.wbShiftRange || '').match(/±(\d+)\s*A\/B\s*[·×·\s]+±(\d+)\s*G\/M/);
-    if (rm) { rangeAB = parseInt(rm[1]); rangeGM = parseInt(rm[2]); }
 
     // Find the Incandescent / 3000-3200K preset for this camera
     var tungstenPreset = 'Incandescent';
